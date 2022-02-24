@@ -44,7 +44,7 @@
 #
 # 1. What is the shape of `train_Y`?
 #
-# 1. What is the purpose of the [`with torch.no_grad()`](https://pytorch.org/docs/stable/generated/torch.no_grad.html#torch.no_grad) context manager?
+# 1. What is the purpose of the `with torch.no_grad()` ([documentation](https://pytorch.org/docs/stable/generated/torch.no_grad.html#torch.no_grad)) context manager?
 #
 # 1. How do we compute accuracy? Describe the code for doing so.
 #
@@ -53,7 +53,7 @@
 #     predictions = valid_output.argmax(1)
 #
 #     # Sum up total number that were correct
-#     valid_correct += (predictions == Y).type(torch.float).sum().item()
+#     valid_correct += (predictions == valid_Y).type(torch.float).sum().item()
 #     ~~~
 #
 # 1. What happens when you rerun the training cell for additional epochs without rerunning any other cells?
