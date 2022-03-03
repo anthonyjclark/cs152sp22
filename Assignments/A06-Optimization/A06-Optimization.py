@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ---
 # jupyter:
 #   jupytext:
@@ -15,98 +16,60 @@
 
 # %% [markdown] toc=true
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
-# <div class="toc"><ul class="toc-item"><li><span><a href="#Instructions:" data-toc-modified-id="Instructions:-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Instructions:</a></span></li><li><span><a href="#Questions-to-Answer" data-toc-modified-id="Questions-to-Answer-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Questions to Answer</a></span></li><li><span><a href="#Things-to-Try" data-toc-modified-id="Things-to-Try-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Things to Try</a></span></li><li><span><a href="#Set-Hyperparameters" data-toc-modified-id="Set-Hyperparameters-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Set Hyperparameters</a></span></li><li><span><a href="#Prepare-the-MNIST-Dataset" data-toc-modified-id="Prepare-the-MNIST-Dataset-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Prepare the MNIST Dataset</a></span></li><li><span><a href="#Create-a-Neural-Network" data-toc-modified-id="Create-a-Neural-Network-6"><span class="toc-item-num">6&nbsp;&nbsp;</span>Create a Neural Network</a></span></li><li><span><a href="#Train-Classifier" data-toc-modified-id="Train-Classifier-7"><span class="toc-item-num">7&nbsp;&nbsp;</span>Train Classifier</a></span></li></ul></div>
+# <div class="toc"><ul class="toc-item"><li><span><a href="#Instructions:" data-toc-modified-id="Instructions:-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Instructions:</a></span></li><li><span><a href="#Things-to-Implement" data-toc-modified-id="Things-to-Implement-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Things to Implement</a></span></li><li><span><a href="#Set-Hyperparameters" data-toc-modified-id="Set-Hyperparameters-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Set Hyperparameters</a></span></li><li><span><a href="#Prepare-the-Dataset" data-toc-modified-id="Prepare-the-Dataset-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Prepare the Dataset</a></span></li><li><span><a href="#Create-a-Neural-Network" data-toc-modified-id="Create-a-Neural-Network-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Create a Neural Network</a></span></li><li><span><a href="#Train-Classifier" data-toc-modified-id="Train-Classifier-6"><span class="toc-item-num">6&nbsp;&nbsp;</span>Train Classifier</a></span></li></ul></div>
 
 # %% [markdown]
-# # Mini-Batch SGD Assignment
+# # Optimization Assignment
 #
 # ## Instructions:
 #
 # 1. Clone this repository (or just pull changes if you already have it).
 # 2. Start Jupyter (don't forget to activate conda).
 # 3. Duplicate this file so that you can still pull changes without merging.
-# 4. Complete the "Questions to Answer."
-# 5. Complete the "Things to Try."
+# 4. Complete the "Things to Implement."
 #
-# ## Questions to Answer
+# ## Things to Implement
 #
-# You will answer these questions on gradescope. Try to answer these in your group prior to running or altering any code.
+# 1. Momentum
 #
-# 1. How could you make this code run "stochastic gradient descent (SGD)"?
+# $$
+# \begin{align}
+# m_{t+1} &:= β_m m_t + (1 - β_m) \nabla_θ L_b(θ_t) \\
+# θ_{t+1} &:= θ_t - η m_{t+1}
+# \end{align}
+# $$
 #
-# 1. How could you make this code run "batch gradient descent (BGD)"?
+# 2. RMSProp
 #
-# 1. What is the shape of `train_X`?
+# $$
+# \begin{align}
+# g_{t+1}^2 &:= β_g g_t^2 + (1 - β_g) (\nabla_θ L_b(θ_t))^2 \\
+# θ_{t+1} &:= θ_t - η \frac{\nabla_θ L_b(θ_t)}{\sqrt{g_{t+1}^2} + ε}
+# \end{align}
+# $$
 #
-# 1. What is the shape of `train_output`?
+# 3. Adam
 #
-# 1. What values would you expect to see in the `train_output` tensor?
+# $$
+# \begin{align}
+# m_{t+1} &:= β_m m_t + (1 - β_m) \nabla_θ L_b(θ_t) \\
+# \hat m_{t+1} &:= \frac{m_{t+1}}{1 - β_m^t} \\
+# g_{t+1}^2 &:= β_g g_t^2 + (1 - β_g) (\nabla_θ L_b(θ_t))^2 \\
+# \hat g_{t+1}^2 &:= \frac{g_{t+1}^2}{1 - β_g^t} \\
+# θ_{t+1} &:= θ_t - η \frac{\hat m_{t+1}}{\sqrt{\hat g_{t+1}^2} + ε}
+# \end{align}
+# $$
 #
-# 1. What is the shape of `train_Y`?
 #
-# 1. What is the purpose of the `with torch.no_grad()` ([documentation](https://pytorch.org/docs/stable/generated/torch.no_grad.html#torch.no_grad)) context manager?
+# A few hints:
 #
-# 1. How do we compute accuracy? Describe the code for doing so.
-#
-#     ~~~python
-#     # Convert network output into predictions (one-hot -> number)
-#     predictions = valid_output.argmax(1)
-#
-#     # Sum up total number that were correct
-#     valid_correct += (predictions == valid_Y).type(torch.float).sum().item()
-#     ~~~
-#
-# 1. What happens when you rerun the training cell for additional epochs without rerunning any other cells?
-#
-# 1. What happens if you set the device to "cpu"?
-#
-#     ~~~python
-#     # device = "cuda" if torch.cuda.is_available() else "cpu"
-#     device = "cpu"
-#     ~~~
-#
-# ## Things to Try
-#
-# 1. Change the hidden layer activation functions to sigmoid. What were the results?
-#
-# 1. Change the hidden layer activation functions to [something else](https://pytorch.org/docs/stable/nn.html#non-linear-activations-weighted-sum-nonlinearity). What were the results?
-#
-# 1. (Optional) Try adding a [dropout layer](https://pytorch.org/docs/stable/generated/torch.nn.Dropout.html#torch.nn.Dropout) after each activation function. What were the results?
-#
-# 1. (Optional) Try changing the dataset to either [KMNIST](https://pytorch.org/vision/0.11/datasets.html#kmnist) or [Fashion-MNIST](https://pytorch.org/vision/0.11/datasets.html#fashion-mnist). What were the results?
-#
-# 1. (Optional) Try out the **inference** process.
-#
-#     1. Save the model. 
-#     
-#     ~~~python
-#     # All training code above
-#     model_filename = "A05Model.pth"
-#     torch.save(model.state_dict(), model_filename)
-#     ~~~
-#     
-#     1. Create a new notebook.
-#     
-#     1. Load the saved model.
-#     
-#     ~~~python
-#     # Need to bring over some code from the training file to make this work
-#     model = NeuralNetwork(layer_sizes)
-#     model.load_state_dict(torch.load(model_filename))
-#     model.eval()
-#     
-#     # Index of a validation example
-#     i = 0
-#
-#     # Example input and output
-#     x, y = valid_loader.dataset[i][0], valid_loader.dataset[i][1]
-#
-#     with torch.no_grad():
-#         output = model(x)
-#         prediction = output[0].argmax(0)
-#         print(f"Prediction : {prediction}")
-#         print(f"Target     : {y}")
-#     ~~~
+# - Run the code all the way through without any changes and answer the first question on gradescope
+# - Adam combines momentum and RMSProp (and in this case add a bias correction)
+# - $t$ increments after each update (the actual value of $t$ is only used in Adam)
+# - You'll need to add code in two places
+#     1. At the top of the training cell (to initialize momentums and squared gradients)
+#     2. In the parameter update context manager (where you'll find `param -= ...`)
+# - The documentation for torch.optim.Adam will give good values for $\beta_m$ and $\beta_g$
 
 # %% [markdown]
 # ## Set Hyperparameters
@@ -118,12 +81,10 @@ from torch.utils.data import DataLoader
 
 from torchsummary import summary
 
-from torchvision.datasets import MNIST
+from torchvision.datasets import FashionMNIST
 from torchvision.transforms import Compose, Normalize, ToTensor
 
 from fastprogress.fastprogress import master_bar, progress_bar
-
-import pandas as pd
 
 import matplotlib.pyplot as plt
 from jupyterthemes import jtplot
@@ -145,31 +106,31 @@ neurons_per_layer = [13, 17]
 # Mini-Batch SGD hyperparameters
 batch_size = 256
 num_epochs = 10
-learning_rate = 0.01
+learning_rate = 0.001
 
 criterion = nn.CrossEntropyLoss()
 
 
 # %% [markdown]
-# ## Prepare the MNIST Dataset
+# ## Prepare the Dataset
 
 # %%
-def get_mnist_data_loaders(path, batch_size, valid_batch_size=0):
+def get_fmnist_data_loaders(path, batch_size, valid_batch_size=0):
 
-    # MNIST specific transforms
-    mnist_mean = (0.1307,)
-    mnist_std = (0.3081,)
-    mnist_xforms = Compose([ToTensor(), Normalize(mnist_mean, mnist_std)])
+    # Data specific transforms
+    data_mean = (0.2860,)
+    data_std = (0.3530,)
+    xforms = Compose([ToTensor(), Normalize(data_mean, data_std)])
 
     # Training data loader
-    train_dataset = MNIST(root=path, train=True, download=True, transform=mnist_xforms)
+    train_dataset = FashionMNIST(root=path, train=True, download=True, transform=xforms)
 
     # Set the batch size to N if batch_size is 0
     tbs = len(train_dataset) if batch_size == 0 else batch_size
     train_loader = DataLoader(train_dataset, batch_size=tbs, shuffle=True)
 
     # Validation data loader
-    valid_dataset = MNIST(root=path, train=False, download=True, transform=mnist_xforms)
+    valid_dataset = FashionMNIST(root=path, train=False, download=True, transform=xforms)
 
     # Set the batch size to N if batch_size is 0
     vbs = len(valid_dataset) if valid_batch_size == 0 else valid_batch_size
@@ -179,18 +140,22 @@ def get_mnist_data_loaders(path, batch_size, valid_batch_size=0):
 
 
 # %%
-train_loader, valid_loader = get_mnist_data_loaders(data_path, batch_size)
+# Computing normalization constants for Fashion-MNIST
+# train_loader, valid_loader = get_fmnist_data_loaders(data_path, 0)
+# X, _ = next(iter(train_loader))
+# s, m = torch.std_mean(X)
+
+train_loader, valid_loader = get_fmnist_data_loaders(data_path, batch_size)
 
 print("Training dataset shape   :", train_loader.dataset.data.shape)
 print("Validation dataset shape :", valid_loader.dataset.data.shape)
-
-# Notice that each example is 28x28. These are images
 
 # %%
 # Let's plot a few images as an example
 num_to_show = 8
 images = train_loader.dataset.data[:num_to_show]
-labels = train_loader.dataset.targets[:num_to_show]
+targets = train_loader.dataset.targets[:num_to_show]
+labels = [train_loader.dataset.classes[t] for t in targets]
 
 fig, axes = plt.subplots(1, num_to_show)
 
@@ -199,18 +164,7 @@ for axis, image, label in zip(axes, images, labels):
     axis.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
     axis.set_xticks([])
     axis.set_yticks([])
-    axis.set_title(f"Label: {label}")
-
-# %%
-# Let's look at the underlying data for a single image
-train_loader.dataset.data[0]
-
-# %%
-# You can almost make out the "5" in the output above
-# Let's make it a bit more clear
-image = train_loader.dataset.data[0]
-image_df = pd.DataFrame(image.squeeze().numpy())
-image_df.style.set_properties(**{'font-size':'6pt'}).background_gradient('Greys')
+    axis.set_title(f"{label}")
 
 
 # %% [markdown]
@@ -261,6 +215,18 @@ summary(model);
 # ## Train Classifier
 
 # %%
+# Putting this here so that the model is recreated each time the cell is run
+model = NeuralNetwork(layer_sizes).to(device)
+
+t = 1
+
+# 
+# TODO: Add your initialization code for momentum, RMSProp, and Adam
+#
+...
+
+
+
 # A master bar for fancy output progress
 mb = master_bar(range(num_epochs))
 
@@ -303,10 +269,14 @@ for epoch in mb:
         model.zero_grad()
         train_loss.backward()
 
-        # Update parameters
+        # 
+        # TODO: Add changes for momentum, RMSProp, and Adam
+        #
         with torch.no_grad():
             for param in model.parameters():
                 param -= learning_rate * param.grad
+
+        t += 1
 
     #
     # Validation
@@ -352,7 +322,7 @@ for epoch in mb:
     # Update plot data
     max_loss = max(max(train_losses), max(valid_losses))
     min_loss = min(min(train_losses), min(valid_losses))
-    
+
     x_margin = 0.2
     x_bounds = [0 - x_margin, num_epochs + x_margin]
 
