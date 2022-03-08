@@ -70,6 +70,7 @@
 #     1. At the top of the training cell (to initialize momentums and squared gradients)
 #     2. In the parameter update context manager (where you'll find `param -= ...`)
 # - The documentation for torch.optim.Adam will give good values for $\beta_m$ and $\beta_g$
+# - If momentum performs poorly, then it might be that you are not updating momentum values in-place
 
 # %% [markdown]
 # ## Set Hyperparameters
@@ -218,7 +219,7 @@ summary(model);
 # Putting this here so that the model is recreated each time the cell is run
 model = NeuralNetwork(layer_sizes).to(device)
 
-t = 1
+t = 0
 
 # 
 # TODO: Add your initialization code for momentum, RMSProp, and Adam
@@ -272,11 +273,33 @@ for epoch in mb:
         # 
         # TODO: Add changes for momentum, RMSProp, and Adam
         #
-        with torch.no_grad():
-            for param in model.parameters():
-                param -= learning_rate * param.grad
-
         t += 1
+        with torch.no_grad():
+            # Original gradient descent
+            for param in model.parameters():
+                # θ_{t+1} := θ_t - η \nabla_θ L_b(θ_t)
+                param -= learning_rate * param.grad
+                
+            # Gradient descent with momentum
+            # for param, momentum in ...
+                # m_{t+1} := β_m m_t + (1 - β_m) \nabla_θ L_b(θ_t)
+                # θ_{t+1} := θ_t - η m_{t+1}
+                ...
+                
+            # Gradient descent with RMSProp
+            # for param, sq_grad in ...
+                # g_{t+1}^2 := β_g g_t^2 + (1 - β_g) (\nabla_θ L_b(θ_t))^2
+                # θ_{t+1} := θ_t - η \frac{\nabla_θ L_b(θ_t)}{\sqrt{g_{t+1}^2} + ε}
+                ...
+
+            # Gradient descent with Adam
+            # for param, momentum, sq_grad in ...
+                # m_{t+1} := β_m m_t + (1 - β_m) \nabla_θ L_b(θ_t)
+                # \hat m_{t+1} := \frac{m_{t+1}}{1 - β_m^t}
+                # g_{t+1}^2 := β_g g_t^2 + (1 - β_g) (\nabla_θ L_b(θ_t))^2
+                # \hat g_{t+1}^2 := \frac{g_{t+1}^2}{1 - β_g^t}
+                # θ_{t+1} := θ_t - η \frac{\hat m_{t+1}}{\sqrt{\hat g_{t+1}^2} + ε}
+                ...
 
     #
     # Validation

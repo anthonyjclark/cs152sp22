@@ -15,7 +15,7 @@
 
 # %% [markdown] toc=true
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
-# <div class="toc"><ul class="toc-item"><li><span><a href="#Create-a-noisy-signal" data-toc-modified-id="Create-a-noisy-signal-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Create a noisy signal</a></span></li><li><span><a href="#Windowing-Average" data-toc-modified-id="Windowing-Average-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Windowing Average</a></span></li><li><span><a href="#Demo-Exponential-Moving-Average-(EMA)" data-toc-modified-id="Demo-Exponential-Moving-Average-(EMA)-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Demo Exponential Moving Average (EMA)</a></span></li><li><span><a href="#EMA-With-Bias-Correction" data-toc-modified-id="EMA-With-Bias-Correction-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>EMA With Bias Correction</a></span></li></ul></div>
+# <div class="toc"><ul class="toc-item"><li><span><a href="#Create-a-noisy-signal" data-toc-modified-id="Create-a-noisy-signal-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Create a noisy signal</a></span></li><li><span><a href="#Windowing-Average" data-toc-modified-id="Windowing-Average-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Windowing Average</a></span></li><li><span><a href="#Exponential-Moving-Average-(EMA)" data-toc-modified-id="Exponential-Moving-Average-(EMA)-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Exponential Moving Average (EMA)</a></span></li><li><span><a href="#EMA-With-Bias-Correction" data-toc-modified-id="EMA-With-Bias-Correction-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>EMA With Bias Correction</a></span></li></ul></div>
 
 # %%
 import torch
@@ -61,7 +61,7 @@ _ = plt.legend()
 
 # %%
 y_ema = [y[0]]
-beta = 0.8
+beta = 0.9
 
 for yval in y[1:]:
     new_y_ema = beta * y_ema[-1] + (1 - beta) * yval
