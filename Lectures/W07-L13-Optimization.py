@@ -138,12 +138,12 @@ plot_loss_landscape(size, ax_3d)
 
 ax_2d = fig.add_subplot(1, 2, 2)
 X1, X2, L = loss_landscape_plot_data(size)
-ax_2d.contour(X1, X2, L, levels=10)
+ax_2d.contourf(X1, X2, L, levels=10)
 
-colors = ["r--", "b--", "w--", "g--", "r:", "b:", "w:", "g:"]
+colors = ["r--", "y--", "w--", "g--", "r:", "y:", "w:", "g:"]
 
 for res, color in zip(results, colors):
-    w1, w2, _ = results[res]
+    w1, w2, ls = results[res]
     ax_3d.plot(w1, w2, ls, color, linewidth=3, zorder=11)
     ax_2d.plot(w1, w2, color, linewidth=3, label=res)
 
@@ -152,7 +152,7 @@ _ = ax_2d.legend(bbox_to_anchor=(1.04, 1), loc="upper left")
 # %%
 fig, ax = plt.subplots(figsize=(8, 8))
 
-ax.contour(X1, X2, L, levels=10)
+ax.contourf(X1, X2, L, levels=10)
 
 lines = []
 for res, color in zip(results, colors):
@@ -174,7 +174,5 @@ HTML(animation.to_jshtml())
 
 # %%
 # animation.save("optimization.mp4")
-
-# %%
 
 # %%
