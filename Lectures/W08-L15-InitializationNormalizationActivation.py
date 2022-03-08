@@ -15,7 +15,7 @@
 
 # %% [markdown] toc=true
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
-# <div class="toc"><ul class="toc-item"><li><span><a href="#Things-to-Consider" data-toc-modified-id="Things-to-Consider-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Things to Consider</a></span></li><li><span><a href="#Synthetic-Input" data-toc-modified-id="Synthetic-Input-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Synthetic Input</a></span></li><li><span><a href="#Fully-Connected-Neural-Network-With-Linear-Output" data-toc-modified-id="Fully-Connected-Neural-Network-With-Linear-Output-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Fully-Connected Neural Network With Linear Output</a></span></li><li><span><a href="#Training-Loop" data-toc-modified-id="Training-Loop-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Training Loop</a></span></li><li><span><a href="#Examine-Hidden-Calculations" data-toc-modified-id="Examine-Hidden-Calculations-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Examine Hidden Calculations</a></span></li><li><span><a href="#Model-Initialization-and-Normalization" data-toc-modified-id="Model-Initialization-and-Normalization-6"><span class="toc-item-num">6&nbsp;&nbsp;</span>Model Initialization and Normalization</a></span></li></ul></div>
+# <div class="toc"><ul class="toc-item"><li><span><a href="#Things-to-Consider" data-toc-modified-id="Things-to-Consider-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Things to Consider</a></span></li><li><span><a href="#Synthetic-Input" data-toc-modified-id="Synthetic-Input-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Synthetic Input</a></span></li><li><span><a href="#Fully-Connected-Neural-Network-With-Linear-Output" data-toc-modified-id="Fully-Connected-Neural-Network-With-Linear-Output-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Fully-Connected Neural Network With Linear Output</a></span></li><li><span><a href="#Training-Loop" data-toc-modified-id="Training-Loop-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Training Loop</a></span></li><li><span><a href="#Examine-Hidden-Calculations" data-toc-modified-id="Examine-Hidden-Calculations-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Examine Hidden Calculations</a></span><ul class="toc-item"><li><span><a href="#What-do-the-outputs-of-each-of-the-eight-hidden-layer-neurons-look-like?" data-toc-modified-id="What-do-the-outputs-of-each-of-the-eight-hidden-layer-neurons-look-like?-5.1"><span class="toc-item-num">5.1&nbsp;&nbsp;</span>What do the outputs of each of the eight hidden layer neurons look like?</a></span></li></ul></li><li><span><a href="#Model-Initialization-and-Normalization" data-toc-modified-id="Model-Initialization-and-Normalization-6"><span class="toc-item-num">6&nbsp;&nbsp;</span>Model Initialization and Normalization</a></span></li></ul></div>
 
 # %% [markdown]
 # ## Things to Consider
@@ -45,8 +45,8 @@ jtplot.style(context="talk")
 
 # %%
 N = 500
-X = torch.linspace(-3, 3, N).reshape(-1, 1)
-y = torch.sin(X)
+X = torch.linspace(-3, 3, N).reshape(-1, 1) + 3.1415926 * 10
+y = torch.sin(X) + 0.5
 _ = plt.plot(X, y)
 
 
@@ -61,12 +61,16 @@ class NeuralNetwork(nn.Module):
         # Hidden layers
         hidden_layers = [
             nn.Sequential(nn.Linear(nlminus1, nl), nn.ReLU())
+#             nn.Sequential(nn.Linear(nlminus1, nl))
+#             nn.Sequential(nn.Linear(nlminus1, nl), nn.Sigmoid())
+#             nn.Sequential(nn.Linear(nlminus1, nl), nn.LeakyReLU())
             for nl, nlminus1 in zip(layer_sizes[1:-1], layer_sizes)
         ]
 
         # Output layer
         output_layer = nn.Linear(layer_sizes[-2], layer_sizes[-1])
-
+#         output_layer = nn.Linear(layer_sizes[-2], layer_sizes[-1], bias=True)
+        
         # Group all layers into the sequential container
         all_layers = hidden_layers + [output_layer]
         self.layers = nn.Sequential(*all_layers)
@@ -97,23 +101,34 @@ def train(model, X, y, num_epochs=2000):
 
 
 # Compare: width vs depth
+# layer_sizes = (1, 100, 1)  # "wider"
+# layer_sizes = (1, 100, 100, 100, 100, 100, 5, 1)  # "deeper"
 layer_sizes = (1, 8, 1)
+
+# Universal approximation theorem: a two-layer network can approximate any function
+# - it takes O(2^n) exponential width
+# - to have the same complexity as a polynomial deep network
+
 model = NeuralNetwork(layer_sizes)
 summary(model)
 losses = train(model, X, y)
-print(f"Final loss: {losses[-1]:.3f}")
+print(f"Final loss: {losses[-1]:.6f}")
 
 # %%
 yhat = model(X)
 
 _, (ax1, ax2) = plt.subplots(2, 1)
 
-ax1.plot(X, y)
-ax1.plot(X, yhat.detach())
+ax1.plot(X, y, label="Target")
+ax1.plot(X, yhat.detach(), label="Prediction")
+ax1.legend()
 _ = ax2.plot(losses)
 
 # %% [markdown]
 # ## Examine Hidden Calculations
+
+# %% [markdown]
+# ### What do the outputs of each of the eight hidden layer neurons look like?
 
 # %%
 final_layer_input = None
@@ -141,11 +156,11 @@ bL = list(model.parameters())[-1].item()
 # Plot each input to the final layer
 plt.plot(X, final_layer_input * WL, label="Activation")
 
-# Plot the output of the final layer
-plt.plot(X, yhat.detach(), "o", label="yhat")
+# # Plot the output of the final layer
+# plt.plot(X, yhat.detach(), "o", label="yhat")
 
-# Compare with hand-computed final layer output
-plt.plot(X, final_layer_input @ WL.T + bL, "--", label="Combined Activations")
+# # Compare with hand-computed final layer output
+# plt.plot(X, final_layer_input @ WL.T + bL, "--", label="Combined Activations")
 
 _ = plt.legend(bbox_to_anchor=(1.04,1), loc="upper left")
 
