@@ -19,28 +19,54 @@
 # <div class="toc"><ul class="toc-item"><li><span><a href="#Questions-to-Answer" data-toc-modified-id="Questions-to-Answer-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Questions to Answer</a></span></li><li><span><a href="#Experimental-Parameters-and-Hyperparameters" data-toc-modified-id="Experimental-Parameters-and-Hyperparameters-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Experimental Parameters and Hyperparameters</a></span></li><li><span><a href="#Synthetic-Training-Data-(no-validation-data-😅)" data-toc-modified-id="Synthetic-Training-Data-(no-validation-data-😅)-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Synthetic Training Data (no validation data 😅)</a></span></li><li><span><a href="#Fully-Connected-Neural-Network-With-Linear-Output" data-toc-modified-id="Fully-Connected-Neural-Network-With-Linear-Output-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Fully-Connected Neural Network With Linear Output</a></span></li><li><span><a href="#Model-Creation" data-toc-modified-id="Model-Creation-5"><span class="toc-item-num">5&nbsp;&nbsp;</span>Model Creation</a></span></li><li><span><a href="#Training-Loop" data-toc-modified-id="Training-Loop-6"><span class="toc-item-num">6&nbsp;&nbsp;</span>Training Loop</a></span></li><li><span><a href="#Examine-Hidden-Calculations" data-toc-modified-id="Examine-Hidden-Calculations-7"><span class="toc-item-num">7&nbsp;&nbsp;</span>Examine Hidden Calculations</a></span></li><li><span><a href="#Examine-Layer-Inputs,-Parameters,-and-Gradients" data-toc-modified-id="Examine-Layer-Inputs,-Parameters,-and-Gradients-8"><span class="toc-item-num">8&nbsp;&nbsp;</span>Examine Layer Inputs, Parameters, and Gradients</a></span></li></ul></div>
 
 # %% [markdown]
+# # Activations, Initialization, and Normalization
+#
+# This notebook is all about the range of numbers. Specifically, the range of
+#
+# - input features (pixels, words, distances, stock data, audio waves, etc.),
+# - activation functions (sigmoid, relu, etc.),
+# - activations (the outputs of activation functions),
+# - parameters (weights, biases, etc.), and
+# - parameter gradients.
+#
+# Here are a couple of reminders that you might find helpful.
+#
+# Each neuron implements these two equations:
+#
+# $$
+# \begin{align}
+# Z^{[l]} &= A^{[l-1]} W^{[l]T} + \mathbf{b}^{[l]}\\
+# A^{[l]} &= g^{[l]}(Z^{[l]})
+# \end{align}
+# $$
+#
+# - $Z^{[l]}$ is the linear output of layer $l$ (e.g., the output of a `nn.Linear` module)
+# - $A^{[l-1]}$ is a tensor containing all activations for layer $l-1$ (or just a batch of them)
+# - $W^{[l]}$ is a parameter matrix for layer $l$ called "weights"
+# - $\mathbf{b}^{[l]}$ is a parameter vector for layer $l$ called "bias"
+# - $A^{[l]}$ is a tensor containing all activations for layer $l$ (outputs of an activation function, e.g., `nn.Sigmoid`)
+# - $g^{[l]}(\cdot)$ is the activation function for layer $l$ (e.g., sigmoid)
+#
+# Here are a couple of activation function examples. Pay close attention to the range of the input values (input values are on the x-axis).
+#
+# ![Sigmoid Activation Function](https://singlepages.github.io/NeuralNetworks/img/Sigmoid.png)
+#
+# ![ReLU Activation Function](https://singlepages.github.io/NeuralNetworks/img/ReLU.png)
+
+# %% [markdown]
 # ## Questions to Answer
 #
 # These questions will also appear on gradescope.
 #
-# 1. What is the purpose of the bias term in a single neuron ("$b$" in $z = X W^T + b$)?
-#
+# 1. What terms directly impact the output of an activation function?
+# 1. What is the purpose of the bias term in a single neuron?
 # 1. What is the purpose of an activation function (what happens when we remove all activation functions)?
-#
-# 1. Why are deeper networks generally more useful than shallower networks?
-#
-# 1. Is a deeper or shallower network more likely to run into issues with gradients (i.e., exploding or vanishing gradients)?
-#
 # 1. Where is the "interesting" / "useful" range for most activation functions?
-#
-# 1. Why is it an issue for input features (the values in $X$) to be in the range $[25, 35]$?
-#
-# 1. What is a "good" range for input features?
-#
-# 1. Can we "normalize" values between layers?
-#
+# 1. Why are deeper networks generally more useful than shallower networks?
 # 1. What happens to gradients in deeper networks?
-#
+# 1. Why is it an issue for input features to be in the range from 25 to 35?
+# 1. What is a "good" range for input features?
+# 1. Can we "normalize" values between layers?
 # 1. What is the goal when initializing network parameters?
 #
 # You can use the code below to help find (or confirm) answers to these conceptual questions.
