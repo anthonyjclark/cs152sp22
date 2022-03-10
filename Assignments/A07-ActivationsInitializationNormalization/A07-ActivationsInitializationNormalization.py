@@ -109,7 +109,7 @@ input_range = (-3, 3)
 input_noise = 0.1
 
 # Horizontal shift of the training data input (useful for demonstrating input normalization)
-input_shift = 0.3
+input_shift = 0.1
 
 # Noise factor for training data output
 output_noise = 0.1
@@ -191,7 +191,8 @@ def initialize_parameters(layer: nn.Module):
         with torch.no_grad():
 
             # We can always initialize bias to zero
-            layer.bias.fill_(0.0)
+            if layer.bias is not None:
+                layer.bias.fill_(0.0)
 
             if initialization_method == "zeros":
                 layer.weight.fill_(0.0)
@@ -238,10 +239,11 @@ def report_layer_info(l: int, layer: nn.Module, A=None):
         W = layer.weight if type(layer) == nn.Linear else layer[0].weight
         b = layer.bias if type(layer) == nn.Linear else layer[0].bias
         report_mean_stdev(W, "Weights")
-        report_mean_stdev(b, "Bias")
+        if b is not None:
+            report_mean_stdev(b, "Bias")
         if W.grad is not None:
             report_mean_stdev(W.grad.abs(), "Weights gradient")
-        if b.grad is not None:
+        if b is not None and b.grad is not None:
             report_mean_stdev(b.grad.abs(), "Bias gradient")
     print()
 
@@ -316,7 +318,7 @@ final_layer.register_forward_hook(capture_layer_input)
 
 # Grab parameters for the final layer
 WL = final_layer.weight.detach()
-bL = final_layer.bias.item()
+bL = final_layer.bias.item() if final_layer.bias is not None else 0.0
 
 # Plot the output of the final layer
 yhat = model(X)  # Activate hook
