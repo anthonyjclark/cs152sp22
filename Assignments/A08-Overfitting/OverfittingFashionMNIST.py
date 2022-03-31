@@ -18,6 +18,10 @@
 # <div class="toc"><ul class="toc-item"></ul></div>
 
 # %%
+# Dropout, batch norm, etc.
+# Plot accuracies (train and valid)
+
+# %%
 import torch
 import torch.nn as nn
 import torch.optim as optim

@@ -30,7 +30,8 @@
 #     + linear
 #     + quadratic
 #     + cubic
-#     + $n$ degree polynomial
+#     + n-degree polynomial
+#     + ordinary least squares
 #     + neural network
 # - Now run the notebook. What surprised you?
 # - Now report on your results with the following:
@@ -115,7 +116,9 @@ def plot_curves(ax, model=None, MSE=None, poly_deg=0):
 
 def plot(model=None, losses=None, poly_deg=0):
 
-    if losses:
+    plot_losses = losses != None and len(losses) > 1
+    
+    if plot_losses:
         _, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
     else:
         _, ax1 = plt.subplots(1, 1, figsize=(8, 8))
@@ -123,7 +126,7 @@ def plot(model=None, losses=None, poly_deg=0):
     loss = losses[-1] if losses else None
     plot_curves(ax1, model, MSE=loss, poly_deg=poly_deg)
 
-    if losses:
+    if plot_losses:
         ax2.plot(losses)
         ax2.set_xlabel("Epoch")
         ax2.set_ylabel("Loss")
@@ -226,7 +229,7 @@ w1 = torch.randn(1, requires_grad=True)
 b = torch.zeros(1, requires_grad=True)
 
 # Place parameters into a sequence for torch.optim
-params = (b, w1, w2)
+params = (b, w1, w2, w3)
 
 # Create simple cubic model
 def model(X):
