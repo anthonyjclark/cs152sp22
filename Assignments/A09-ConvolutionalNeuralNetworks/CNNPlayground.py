@@ -326,8 +326,6 @@ model = NeuralNetwork(layer_sizes).to(device)
 # TODO: complete the CNN class in the cell above this one
 
 # TODO: use an off-the-shell model from PyTorch
-from torchvision.models import resnet18
-model = resnet18(num_classes=num_classes).to(device)
 
 summary(model)
 
