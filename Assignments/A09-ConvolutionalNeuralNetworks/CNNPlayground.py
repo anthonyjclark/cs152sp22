@@ -140,7 +140,7 @@ def train_one_epoch(mb, loader, device, model, criterion, optimizer):
 
     for batch in progress_bar(range(num_batches), parent=mb):
 
-        mb.child.comment = f"Training"
+        mb.child.comment = "Training"
 
         # Grab the batch of data and send it to the correct device
         X, Y = next(dataiterator)
