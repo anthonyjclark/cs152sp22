@@ -79,16 +79,17 @@ jtplot.style(context="talk")
 
 # %% [markdown]
 # ### Raw dataset
-
-# %% [markdown]
-# - Add five sentences and corresponding parts-of-speech
-# - You can use this utility for double checking your parts-of-speech: https://parts-of-speech.info/
+#
+# - Add two sentences and corresponding parts of speech per group member
+# - You can use this utility for double checking your parts of speech: https://parts-of-speech.info/
 # - I will put them into the notebook (you will need to pull the updates)
 # - Do not include any punctuation
-# - Your sentences must only include
+# - Your sentences must only include nouns, verbs, and determiners
 #     + N for noun
 #     + V for verb
 #     + D for determiner
+# - You can mark pronouns as nouns
+# - We should have 40 new sentences when you all are done
 
 # %%
 raw_dataset = [
@@ -193,6 +194,8 @@ raw_dataset = [
     ("I had a donut", "N V D N"),
     ("Blotto is game", "N V N"),
     ("Game math win", "N N N"),
+    ("Nutella is a topping", "N V D N"),
+    ("Work takes time", "N V N"),
 ]
 
 
