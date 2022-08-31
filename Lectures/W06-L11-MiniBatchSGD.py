@@ -13,11 +13,11 @@
 #     name: python3
 # ---
 
-# %% [markdown] toc=true
+# %% [markdown] toc=true pycharm={"name": "#%% md\n"}
 # <h1>Table of Contents<span class="tocSkip"></span></h1>
 # <div class="toc"><ul class="toc-item"><li><span><a href="#Set-Hyperparameters" data-toc-modified-id="Set-Hyperparameters-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Set Hyperparameters</a></span></li><li><span><a href="#Prepare-the-MNIST-Dataset" data-toc-modified-id="Prepare-the-MNIST-Dataset-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Prepare the MNIST Dataset</a></span></li><li><span><a href="#Create-a-Neural-Network" data-toc-modified-id="Create-a-Neural-Network-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Create a Neural Network</a></span></li><li><span><a href="#Train-Classifier" data-toc-modified-id="Train-Classifier-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Train Classifier</a></span></li></ul></div>
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # # Mini-Batch Stochastic Gradient Descent
 #
 # In this notebook we will:
@@ -27,10 +27,10 @@
 # 3. create a simple, fully connected neural network, and then
 # 4. train a neural network to classify digits.
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Set Hyperparameters
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
@@ -47,7 +47,7 @@ from jupyterthemes import jtplot
 
 jtplot.style(context="talk")
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # Let's use some shared space for the data (so that we don't have copies
 # sitting around everywhere)
 data_path = "/raid/cs152/cache/pytorch/data"
@@ -67,10 +67,10 @@ learning_rate = 0.01
 criterion = nn.CrossEntropyLoss()
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Prepare the MNIST Dataset
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 def get_mnist_data_loaders(path, batch_size, valid_batch_size=0):
 
     # MNIST specific transforms
@@ -95,7 +95,7 @@ def get_mnist_data_loaders(path, batch_size, valid_batch_size=0):
     return train_loader, valid_loader
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 train_loader, valid_loader = get_mnist_data_loaders(data_path, batch_size)
 
 print("Training dataset shape   :", train_loader.dataset.data.shape)
@@ -103,7 +103,7 @@ print("Validation dataset shape :", valid_loader.dataset.data.shape)
 
 # Notice that each example is 28x28. These are images
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # Let's plot a few images as an example
 num_to_show = 8
 images = train_loader.dataset.data[:num_to_show]
@@ -119,10 +119,10 @@ for axis, image, label in zip(axes, images, labels):
     axis.set_title(f"Label: {label}")
 
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Create a Neural Network
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 class NeuralNetwork(nn.Module):
     def __init__(self, layer_sizes):
         super(NeuralNetwork, self).__init__()
@@ -132,7 +132,7 @@ class NeuralNetwork(nn.Module):
 
         # The hidden layers include:
         # 1. a linear component (Z) and
-        # 2. a non-linear comonent (A)
+        # 2. a non-linear component (A)
         hidden_layers = [
             nn.Sequential(nn.Linear(nlminus1, nl), nn.ReLU())
             for nl, nlminus1 in zip(layer_sizes[1:-1], layer_sizes)
@@ -150,7 +150,7 @@ class NeuralNetwork(nn.Module):
         return self.layers(X)
 
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # The input layer size depends on the dataset
 n0 = train_loader.dataset.data.shape[1:].numel()
 
@@ -163,10 +163,10 @@ model = NeuralNetwork(layer_sizes).to(device)
 
 summary(model);
 
-# %% [markdown]
+# %% [markdown] pycharm={"name": "#%% md\n"}
 # ## Train Classifier
 
-# %%
+# %% pycharm={"name": "#%%\n"}
 # A master bar for fancy output progress
 mb = master_bar(range(num_epochs))
 
@@ -271,4 +271,7 @@ for epoch in mb:
 
     mb.update_graph(graph_data, x_bounds, y_bounds)
 
-# %%
+# %% pycharm={"name": "#%%\n"}
+plt.plot(train_losses)
+
+# %% pycharm={"name": "#%%\n"}

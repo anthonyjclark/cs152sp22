@@ -196,7 +196,15 @@ raw_dataset = [
     ("Game math win", "N N N"),
     ("Nutella is a topping", "N V D N"),
     ("Work takes time", "N V N"),
+    ("Jane trades the stree", "N V D N"),
+    ("Apples have taste", "N V N"),
+    ("Dogs love life", "N V N"),
+    ("Marvel makes comics", "N V N"),
+    ("Alex is a child", "N V D N"),
+    ("Alex likes chocolates", "N V N"),
+    ("A cat has a rat", "D N V D N"),
 ]
+
 
 
 # %% [markdown]
